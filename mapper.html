@@ -1,118 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<title>soniminimap</title>
-    <link rel="stylesheet" type="text/css" href="css.css"></link>
+    <link rel="stylesheet" type="text/css" href="css.css">
 	</head>
 	<body>
 <div >
   <canvas height="1080" width="1080" id="map"></canvas>
 </div>
 <script src="./chart.umd.js"></script>
-<script>
-const selected_map = 'w3r01';
-const origins = {
-    w1r03: {
-      origin: [1105, 2861],
-      scale_factor: 1.433
-    },
-    w2r01: {
-      origin: [2223, 2122],
-      scale_factor: 1.2573
-    },
-    w3r01: {
-      origin: [2040, 2045],
-      scale_factor: 1.007
-    },
-    w1r05: {
-      origin: [2029, 1661],
-      scale_factor: 1.0796
-    },
-    w1r04: {
-      origin: [2040, 706],
-      scale_factor: 0.9761
-    },
-  };
-
-const data = {
-  datasets: [{
-    label: 'Scatter Dataset',
-    data: [],
-    backgroundColor: function(context) {
-                    var index = context.dataIndex;
-                    var value = context.dataset.data[index];
-                    const intensity = value?.z / 1500 * 255
-                    // console.log(intensity);
-                    return 'rgba(' + 1 * intensity + ', 100, 100, 1)';
-                }
-    // backgroundColor: 'rgb(255, 99, 132)'
-  }],
-};
-
-const config = {
-  type: 'scatter',
-  data: data,
-  options: {
-    responsive: false,
-    showLine: true,
-    backgroundColor: 'rgba(0, 0, 0, .5)',
-    borderColor: 'rgba(255, 255, 255, 0.5)',
-    plugins: {
-      tooltip: {
-        enabled: false,
-      },
-      legend: {
-        display: false,
-      },
-    },
-    animation: false,
-    scales: {
-      x: {
-        type: 'linear',
-        position: 'bottom',
-        min: -2046,
-        max: 2040,
-
-        display: false,
-      },
-      y: {
-        display: false,
-        min: -4006,
-        max: 4096,
-      }
-    }
-  }
-};
-const ctx = document.getElementById('map');
-    myChart = new Chart(ctx, config);
+<div class="menu">
+<ul>
+  <li onclick="loadMap('w1r03')">Kronos</li>
+  <li onclick="loadMap('w2r01')">Ares</li>
+  <li onclick="loadMap('w3r01')">Chaos</li>
+  <li onclick="loadMap('w1r05')">Rhea</li>
+  <li onclick="loadMap('w1r04')">Ouranos</li>
+</ul>
+</div>
 
 
-    async function updateChartData(chart){
-    const url = './movements.txt'
-    let ok = true;
-      const response = await fetch(url).catch(function(e) { console.log(e); ok = false; return false;});
-
-    if (!response) {
-      return;
-    }
-    const text = await response.text();
-    /*
-    const row = text.split('\r\n').slice(-2, -1)[0];
-    const values = row.split(',');
-    const [x, y] = [values[1],values[3]]
-    console.log(row);
-*/
-    text.split('\r\n').forEach((row) => {
-      const values = row.split(',');
-
-      const [x, y] = [values[0],values[2]]
-
-    chart.data.datasets[0].data.push({x: x, y: -1*y*2, z: values[1], backgroundColor: 'yellow'});
-    });
-    chart.update('quiet');
-    
-  }
-  updateChartData(myChart);
-</script>
+<div class="coordinate_input">
+<form action="">
+  <textarea id="coordinates">
+0,0,0
+100,0,0
+-100,2000,100
+-50,2000,150
+50,2000,200
+150,2000,150
+200,2000,100</textarea>
+  <input type="submit" value="Load points">
+  <button type="button" id="clear_button">Clear points</button>
+</form>
+</div>
+<div id="title">
+  <p>?</p>
+  <h1>SoniMinimap v0.1</h1>
+  <p>Allows plotting of arbitrary points on Sonic Frontiers maps. Expected use case is exporting a CSV from Portal Gear and then copy/pasting the coordinates here to visualize them.</p>
+  <p>Usage: Input one xyz coordinate per line and click "load points"</p>
+  <p>I put very little thought / effort into this, so it may not work as you expect, or at all. <a href="https://github.com/tashiww/soniminimap">Source code</a> is available.</p>
+</div>
 </body>
+<script src="./mapper.js"></script>
+
 </html>
