@@ -53,12 +53,12 @@ function updateOrigins(stage_name) {
 }
 const data = {
 	datasets: [{
-		label: 'Scatter Dataset',
+		label: 'Coordinates',
 		data: [],
 		backgroundColor: function (context) {
 			var index = context.dataIndex;
 			var value = context.dataset.data[index];
-			const intensity = value?.z / 1500 * 255
+			const intensity = value?.z / 500 * 255
 			return 'rgba(' + 1 * intensity + ', 100, 100, 1)';
 		}
 	}],
@@ -71,13 +71,21 @@ const config = {
 		responsive: false,
 		showLine: true,
 		backgroundColor: 'rgba(0, 0, 0, .5)',
-		borderColor: 'rgba(255, 255, 255, 0.5)',
+		pointRadius: 3,
+		borderColor: 'rgba(255, 255, 255, 0.1)',
+		borderWidth: 1,
+		interaction: {
+			mode: 'index',
+		
+		},
 		plugins: {
 			tooltip: {
 				callbacks: {
 					label: function(tooltipItem) {
 						const {x, y, z} = tooltipItem.raw;
-						return 'X: ' + x + ', Y:' + y + ', Z:' + z;
+						const scale_factor = origins[selected_map].scale_factor;
+						// flip z and y back to sonic frontiers native style (y is height)
+						return 'X: ' + Math.round(x / scale_factor ) + ', Y:' + Math.round(z / scale_factor) + ', Z:' + Math.round(y / scale_factor);
 					}
 				 }			
 				},
@@ -126,7 +134,8 @@ function coordinate_form_submit(event) {
 		// sonic frontiers treats y as height dimension, 
 		//but for chart.js i'm swapping y and z (using z as height dimension)
 		const [x, y, z] = [values[0], values[2], values[1]]
-		myChart.data.datasets[0].data.push({ x: x, y: -1 * y, z: z });
+		const scale_factor = origins[selected_map].scale_factor;
+		myChart.data.datasets[0].data.push({ x: x * scale_factor, y: -scale_factor * y, z: z });
 	});
 	myChart.update('quiet');
 }
