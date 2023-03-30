@@ -85,7 +85,7 @@ const config = {
 						const {x, y, z} = tooltipItem.raw;
 						const scale_factor = origins[selected_map].scale_factor;
 						// flip z and y back to sonic frontiers native style (y is height)
-						return 'X: ' + Math.round(x / scale_factor ) + ', Y:' + Math.round(z / scale_factor) + ', Z:' + Math.round(y / scale_factor);
+						return 'X: ' + Math.round(x / scale_factor ) + ', Y:' + Math.round(z) + ', Z:' + Math.round(y / scale_factor);
 					}
 				 }			
 				},
